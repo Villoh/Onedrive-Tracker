@@ -14,11 +14,11 @@ MSAL_CACHE_FILE = ".msal_cache.bin"
 AUTHORITY_URL = f'https://login.microsoftonline.com/consumers'
 SCOPES = ["https://graph.microsoft.com/.default"]
 
-def acquire_token_interactive() -> str:
+def acquire_token_interactive() -> dict:
     """Generate Microsoft Token interactively. It will launch a web page to login. 
     If you've alredy logged in you won't need to login again.
     Returns:
-        str: Result token.
+        dict: Result token.
     """
     # Manage cache storage
     cache=msal.SerializableTokenCache()
