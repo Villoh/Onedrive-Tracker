@@ -3,9 +3,11 @@
 # from office365.onedrive.admin import
 import atexit
 import os
+import tempfile
 import msal
 from office365.graph_client import GraphClient
 from config import CLIENT_ID
+from onedrive import download_files
 
 # Define the cache file path
 MSAL_CACHE_FILE = ".msal_cache.bin"
@@ -41,7 +43,7 @@ def acquire_token_interactive() -> str:
         # Assuming the end user chose this one
         chosen = accounts[0]
         # Now let's try to find a token in cache for this account
-        result = app.acquire_token_silent(SCOPES, account=chosen, force_refresh=True)
+        result = app.acquire_token_silent(SCOPES, account=chosen)
         if not result:
             # If silent acquisition fails, prompt the user to sign in interactively
             result = app.acquire_token_interactive(scopes=SCOPES, account=accounts[0], domain_hint="consumers")
@@ -51,7 +53,7 @@ def acquire_token_interactive() -> str:
             )
     
     # Cache the account for future use
-    if "access_token" in result and "refresh_token" in result:
+    if "access_token" in result and 'refreh_token' in result:
         cache.add({
             "client_id": CLIENT_ID,
             "home_account_id": result.get("home_account_id"),
@@ -70,4 +72,10 @@ def acquire_token_interactive() -> str:
     return result
 
 client = GraphClient(acquire_token_interactive)
+
+drive = client.me.drive.get().execute_query()
+
+# download files from OneDrive into local folder 
+download_files(drive.root, './tmp_files/')
+
 

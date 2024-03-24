@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 .msal_cache.bin
+tmp_files/
 
 # C extensions
 *.so
