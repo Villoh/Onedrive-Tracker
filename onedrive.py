@@ -13,14 +13,14 @@ def download_files(remote_folder: DriveItem, local_path: str) -> None:
     try:
         drive_items = remote_folder.children.get().execute_query()
         for drive_item in drive_items:
-            if not drive_item.is_file:
-                print(f"Searching through folder: {drive_item.name} from {drive_item.web_url}")
-                download_files(drive_item, f'{local_path}/{drive_item.name}/')
-            else:
+            if drive_item.is_file:
                 print(f"Downloading file: {drive_item.name} into: {local_path} from {drive_item.web_url}")
                 # download file content
                 os.makedirs(name=local_path, exist_ok=True)
                 with open(os.path.join(local_path, drive_item.name), 'wb') as local_file:
                     drive_item.download(local_file).execute_query()
+            else:
+                print(f"Searching through folder: {drive_item.name} from {drive_item.web_url}")
+                download_files(drive_item, f'{local_path}/{drive_item.name}/')
     except ClientRequestException as e:
         print(f"Error: {e}")
